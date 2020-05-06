@@ -1,0 +1,60 @@
+@keyframes recall-btn {
+	0% {
+		box-shadow: 0 0 5px 0 rgba(255, 215, 0, 0.7);
+	}
+
+	50% {
+		box-shadow: 0 0 20px 0 rgba(255, 215, 0, 0.7);
+	}
+
+	100% {
+		box-shadow: 0 0 5px 0 rgba(255, 215, 0, 0.7);
+	}
+}
+
+.section {
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	align-items: center;
+	width: 100%;
+	padding-bottom: 15px;
+	border-bottom: 3px dashed rgb(239, 246, 255);
+
+	&__title {
+		margin: 10px 0;
+	}
+
+	&__items-list {
+		width: 100%;
+		margin-bottom: 15px;
+	}
+
+	&__input-field {
+		width: 70%;
+		padding: 1% 10%;
+		font-size: 16px;
+		box-shadow: 0 0 5px 5px rgb(239, 246, 255);
+		outline: none;
+
+		&:focus {
+			box-shadow: inset 0 0 5px 3px rgb(239, 246, 255);
+		}
+	}
+
+	&__recall-btn {
+		animation-name: recall-btn;
+		animation-duration: 2s;
+		animation-iteration-count: infinite;
+
+		width: 200px;
+		height: 50px;
+		margin-top: 20px;
+		font-size: 15px;
+		font-weight: 500;
+		color: rgba(0,0,0,0.7);
+		border-width: 3px;
+		border-radius: 10px;
+		outline: none;
+	}
+}
