@@ -11,14 +11,20 @@ body {
     sans-serif;
   -webkit-font-smoothing: antialiased;
 	-moz-osx-font-smoothing: grayscale;
-	line-height: 20px;
-	letter-spacing: 1px;
+	line-height: 25px;
+	letter-spacing: 2px;
+}
+
+textarea {
+	line-height: 25px;
+	letter-spacing: 3px;
 }
 
 button {
 	background-color: transparent;
 	border-style: dotted;
 	border-color: #d4d8db;
+	outline: none;
 }
 
 code {

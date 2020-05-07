@@ -1,51 +1,61 @@
-import React, { Component } from 'react';
+import React, { useState } from 'react';
 import './section.scss';
 import Item from '../Item/Item';
+import InputArea from '../InputArea/InputArea';
 
-class Section extends Component {
-	state = {
-		inputValue: '',
-	}
+const Section = ({
+  sectionTitle,
+  tasks,
+  hadPlans,
+  recallPlans,
+  handleDelete,
+  handleEdit,
+  applyValue,
+  sectionIndex,
+}) => {
+  const [inputValue, setInputValue] = useState('');
 
-	applyValue = (e) => {
-		if (e.key === 'Enter') {
-			e.preventDefault();
-			const { sectionTitle, applyValue } = this.props;
-			const { inputValue } = this.state;
+  const handleInput = e => {
+    setInputValue(e.target.value);
+  };
 
-			applyValue(inputValue, sectionTitle.toLowerCase());
-			this.setState({ inputValue: '' });
-		}
-	}
+  const applyInputValue = e => {
+    if (e.key === 'Enter') {
+      e.preventDefault();
 
-	handleInput = (e) => {
-		this.setState({inputValue: e.target.value});
-	}
+      applyValue(inputValue, sectionIndex);
+      setInputValue('');
+    }
+  };
 
-	render() {
-		const { sectionTitle, items, hadPlans, recallPlans } = this.props;
-		const { inputValue } = this.state;
-
-		return (
-			<section className='section'>
-				<h2 className='section__title'>{ sectionTitle }:</h2>
-				<ul className='section__items-list'>
-					{
-						items.map((item, i) => <Item key={i} itemContent={item} />)
-					}
-				</ul>
-				<textarea
-				  className="section__input-field"
-					onChange={this.handleInput}
-					value={inputValue}
-					onKeyPress={this.applyValue}
-				></textarea>
-				{hadPlans
-				  && <button className='section__recall-btn' onClick={ recallPlans }>Recall plans...</button>
-				}
-			</section>
-		)
-	}
-}
+  return (
+    <section className='section'>
+      <h2 className='section__title'>{sectionTitle}:</h2>
+      <ul className='section__items-list'>
+        {tasks.map(({ id, value }) => (
+          <Item
+            key={id}
+            taskId={id}
+            itemContent={value}
+            handleDelete={handleDelete}
+            handleEdit={handleEdit}
+            sectionIndex={sectionIndex}
+            applyValue={applyValue}
+          />
+        ))}
+      </ul>
+      <InputArea
+        applyValue={applyInputValue}
+        handleInput={handleInput}
+        inputValue={inputValue}
+      />
+      {hadPlans && (
+        <button className='section__recall-btn' onClick={recallPlans}>
+          Recall plans...
+        </button>
+      )}
+    </section>
+  );
+};
 
 export default Section;

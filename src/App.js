@@ -1,101 +1,158 @@
 import React, { Component } from 'react';
+import cloneDeep from 'lodash.clonedeep';
 import './app.scss';
 
 import Section from './components/Section/Section';
 
 class App extends Component {
-	state = {
-		planned: [],
-		achieved: [],
-		plans: [],
-		getDaily: false,
-		hadPlans: false,
-	}
+  state = {
+    dailyStatus: [
+      { sectionTitle: 'Planned', tasks: [] },
+      { sectionTitle: 'Achieved', tasks: [] },
+      { sectionTitle: 'Plans', tasks: [] },
+    ],
+    getDaily: false,
+    hadPlans: false,
+  };
 
-	containerRef = React.createRef();
+  containerRef = React.createRef();
 	resultRef = React.createRef();
 
-	componentDidMount() {
-		const plans = window.localStorage.getItem('plans');
+  componentDidMount() {
+    const plans = window.localStorage.getItem('plans');
 
-		if (plans) {
-			this.setState({ hadPlans: JSON.parse(plans) });
-		} else {
-			this.setState({ hadPlans: false });
+    if (plans) {
+      this.setState({ hadPlans: JSON.parse(plans) });
+    }
+	}
+
+	componentDidUpdate(prevProps, prevState) {
+		for (let i = 0; i < prevState.dailyStatus.length; i++) {
+			if (prevState.dailyStatus[i].tasks.length < this.state.dailyStatus[i].tasks.length) {
+				this.scrollToBottom();
+			}
 		}
 	}
 
-	componentDidUpdate() {
-		this.scrollToBottom();
-	}
+	handleEdit = (sectionIndex, taskId, newValue) => {
+		this.setState(({ dailyStatus }) => {
+			const copyDaily = cloneDeep(dailyStatus);
+			const tasks = copyDaily[sectionIndex].tasks;
+			const taskIndex = tasks.findIndex(task => task.id === taskId);
+			tasks[taskIndex].value = newValue;
 
-	recallPlans = () => {
-		this.setState(state => ({ planned: state.hadPlans, hadPlans: false }))
-	}
+      return { dailyStatus: copyDaily };
+    });
+	};
 
-	scrollToBottom = () => {
+  handleDelete = (sectionIndex, taskId) => {
+		this.setState(({ dailyStatus }) => {
+			const copyDaily = cloneDeep(dailyStatus);
+			const tasks = copyDaily[sectionIndex].tasks;
+			const taskIndex = tasks.findIndex(task => task.id === taskId);
+			tasks.splice(taskIndex, 1);
+
+      return { dailyStatus: copyDaily };
+    });
+	};
+
+  recallPlans = () => {
+    this.setState(({ dailyStatus, hadPlans })=> {
+			const newDaily = cloneDeep(dailyStatus);
+			newDaily[0].tasks = hadPlans;
+
+			return { dailyStatus: newDaily, hadPlans: false };
+		});
+  };
+
+  scrollToBottom = () => {
 		this.containerRef.current.scrollTop = this.containerRef.current.scrollHeight;
-	}
+  };
 
-	toggleGetDaily = () => {
-		const { plans } = this.state;
+  toggleGetDaily = () => {
+		const { dailyStatus } = this.state;
+		const plans = dailyStatus[2].tasks;
 
-		if (plans.length) {
-			window.localStorage.setItem('plans', JSON.stringify(plans));
-		}
+    if (plans.length) {
+      window.localStorage.setItem('plans', JSON.stringify(plans));
+    }
 
-		this.setState(({ getDaily }) => ({ getDaily: !getDaily }))
-	}
+    this.setState(({ getDaily }) => ({ getDaily: !getDaily }));
+  };
 
-	applyValue = (value, section) => {
-		this.setState(state => {
-			const newSection = [...state[section]];
+  applyValue = (value, sectionIndex) => {
+    this.setState(({ dailyStatus }) => {
+			const copyDaily = cloneDeep(dailyStatus);
+			const id = Math.floor(Math.random() * 1e6);
+      copyDaily[sectionIndex].tasks.push({ id: id, value });
 
-			newSection.push(value);
+      return { dailyStatus: copyDaily };
+    });
+  };
 
-			return { [section]: newSection }
-		})
-	}
+  copyResultText = () => {
+    this.resultRef.current.select();
+    this.resultRef.current.setSelectionRange(0, 99999);
 
-	copyResultText = () => {
-		this.resultRef.current.select();
-		this.resultRef.current.setSelectionRange(0, 99999);
+    document.execCommand('copy');
+  };
 
-		document.execCommand('copy');
-	}
+  render() {
+    const {
+      getDaily,
+      hadPlans,
+      dailyStatus,
+		} = this.state;
 
-	render() {
-		const { planned, achieved, plans, getDaily, hadPlans } = this.state;
+    const dailyValue = dailyStatus.map(({ sectionTitle, tasks }) => {
+			return `${sectionTitle}:\n\n- ${tasks.map(({value}) => value).join('\n- ')}`;
+		}).join('\n\n');
 
-		const dailyValue = `Planned:\n\n- ${planned.join('\n- ')}\n\nAchieved:\n\n- ${achieved.join('\n- ')}\n\nPlans:\n\n- ${plans.join('\n- ')}\n\n`
+    return (
+      <div className='App'>
+        <div className='sections-container' ref={this.containerRef}>
+          {getDaily ? (
+            <div className='result-container'>
+              <textarea
+                className='result-field'
+                value={dailyValue}
+                readOnly
+                ref={this.resultRef}
+              ></textarea>
+              <button
+                className='result-container__copy-btn'
+                onClick={this.copyResultText}
+              >
+                Copy
+              </button>
+            </div>
+          ) : (
+            <>
+              {dailyStatus.map(({ sectionTitle, tasks }, i) => {
+								const sectionProps = {
+									sectionIndex: i,
+									sectionTitle,
+									tasks,
+									applyValue: this.applyValue,
+									handleDelete: this.handleDelete,
+									handleEdit: this.handleEdit,
+								};
 
-		return (
-			<div className="App">
-				<div className='sections-container' ref={this.containerRef}>
-					{getDaily
-			    ? <div className='result-container'>
-					    <textarea className='result-field' value={dailyValue} readOnly ref={this.resultRef}></textarea>
-							<button className='result-container__copy-btn' onClick={this.copyResultText}>Copy</button>
-						</div>
-					: <>
-				      <Section
-							  sectionTitle={'Planned'}
-							  applyValue={this.applyValue}
-							  items={planned}
-							  hadPlans={hadPlans}
-								recallPlans={this.recallPlans}
-							/>
-					    <Section sectionTitle={'Achieved'} applyValue={this.applyValue} items={achieved} />
-					    <Section sectionTitle={'Plans'} applyValue={this.applyValue} items={plans} />
-						</>
-					}
-				</div>
-				<button className="get-daily-button" onClick={this.toggleGetDaily}>
-				  {getDaily ? 'Go back' : 'Get daily status!'}
-				</button>
-			</div>
-		);
-	}
+								if (sectionTitle === 'Planned') {
+									Object.assign(sectionProps, { hadPlans, recallPlans: this.recallPlans });
+								}
+
+								return <Section key={i} {...sectionProps}/>
+							})}
+            </>
+          )}
+        </div>
+        <button className='get-daily-button' onClick={this.toggleGetDaily}>
+          {getDaily ? 'Go back' : 'Get daily status!'}
+        </button>
+      </div>
+    );
+  }
 }
 
 export default App;
