@@ -8,7 +8,8 @@ const InputArea = ({ applyValue, handleInput, inputValue }) => {
       onChange={handleInput}
       value={inputValue}
       onKeyPress={applyValue}
-    ></textarea>
+    >
+		</textarea>
   );
 };
 
