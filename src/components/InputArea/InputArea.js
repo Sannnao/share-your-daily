@@ -3,7 +3,6 @@ import './input-area.scss';
 
 const InputArea = React.forwardRef(({ applyValue, handleInput, inputValue }, ref) => {
 	const moveSelectEnd = (e) => {
-		console.dir(e.target);
 		e.target.selectionStart = e.target.value.length;
 	}
 

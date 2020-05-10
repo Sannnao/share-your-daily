@@ -46,7 +46,6 @@ class DailyList extends Component {
 
   render() {
 		const { dailyStatus, hadPlans, recallPlans, applyValue, handleDelete, handleEdit } = this.props;
-		console.log('render');
 
     return (
       <div className='daily-list' ref={this.containerRef}>
