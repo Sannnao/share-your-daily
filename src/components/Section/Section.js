@@ -27,7 +27,7 @@ const Section = ({
       applyValue(inputValue, sectionIndex);
       setInputValue('');
     }
-  };
+	};
 
   return (
     <section className='section'>

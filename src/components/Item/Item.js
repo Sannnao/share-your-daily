@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { Fragment, useState, useEffect, useRef } from 'react';
 import clsx from 'clsx';
 import './item.scss';
 
@@ -48,6 +48,23 @@ const Item = ({
 		setIsEdit(false);
 	}
 
+	const insertLink = (value) => {
+		const stringArr = value.split(' ');
+
+		const newStringArr = stringArr.map(word => {
+			const linkRegExp = /^https?:\/\//;
+			const isLink = linkRegExp.test(word);
+
+			if (isLink) {
+				return <a href={word} target='__blank'>{ word }</a>
+			}
+
+			return word;
+		})
+
+		return newStringArr.map((word, i) => <Fragment key={i}>{word}{' '}</Fragment>);
+	}
+
   return (
     <li className={clsx('item', { 'item--edit-mode': isEdit })}>
       {isEdit ? (
@@ -62,7 +79,7 @@ const Item = ({
 				</>
       ) : (
         <div className='item__content-container'>
-          <span className='item__text-wrapper'>- {itemContent}</span>
+          <p className='item__text-wrapper'>- {insertLink(itemContent)}</p>
           <div className='item__buttons-wrapper'>
             <button
               onClick={enableEditMode}

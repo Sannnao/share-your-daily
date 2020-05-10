@@ -22,6 +22,15 @@ button {
 	outline: none;
 }
 
+a {
+	text-decoration: none;
+	color: rgb(96, 194, 226);
+
+	&:hover {
+		color: rgb(0, 166, 221);
+	}
+}
+
 code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
