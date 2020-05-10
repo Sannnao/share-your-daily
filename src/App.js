@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import cloneDeep from 'lodash.clonedeep';
 import './app.scss';
 
+import DatePanel from './components/DatePanel/DatePanel';
 import DailyList from './components/DailyList/DailyList';
 
 class App extends Component {
@@ -13,7 +14,8 @@ class App extends Component {
     ],
     getDaily: false,
     hadPlans: false,
-    containerScrollCords: null,
+		containerScrollCords: null,
+		currentDate: new Date().toISOString().split('T')[0],
   };
 
   resultRef = React.createRef();
@@ -24,7 +26,11 @@ class App extends Component {
     if (plans) {
       this.setState({ hadPlans: JSON.parse(plans) });
     }
-  }
+	}
+
+	setNewDate = e => {
+    this.setState({ currentDate: e.target.value });
+  };
 
   handleEdit = (sectionIndex, taskId, newValue) => {
     this.setState(({ dailyStatus }) => {
@@ -65,7 +71,23 @@ class App extends Component {
       window.localStorage.setItem('plans', JSON.stringify(plans));
     }
 
-    this.setState(({ getDaily }) => ({ getDaily: !getDaily }));
+    this.setState(({ getDaily, currentDate, dailyStatus }) => {
+			if (!getDaily) {
+				const dateArr = currentDate.split('-');
+				dateArr.shift();
+
+				const dailyValue = `${dateArr.reverse().join('.')}\n\n${dailyStatus
+					.map(({ sectionTitle, tasks }) => {
+						return `${sectionTitle}:\n\n- ${tasks
+							.map(({ value }) => value)
+							.join('\n- ')}`;
+					})
+					.join('\n\n')}`;
+				return { getDaily: true, dailyValue };
+			}
+
+			return { getDaily: false };
+	  });
   };
 
   applyValue = (value, sectionIndex) => {
@@ -83,26 +105,25 @@ class App extends Component {
     this.resultRef.current.setSelectionRange(0, 99999);
 
     document.execCommand('copy');
-	};
+  };
 
-	setContainerCords = (containerScrollCords) => {
-		this.setState({ containerScrollCords });
-	}
+  setContainerCords = containerScrollCords => {
+    this.setState({ containerScrollCords });
+  };
 
-	unsetContainerCords = () => {
-		this.setState({ containerScrollCords: null });
-	}
+  unsetContainerCords = () => {
+    this.setState({ containerScrollCords: null });
+  };
 
   render() {
-    const { getDaily, hadPlans, dailyStatus, containerScrollCords } = this.state;
-
-    const dailyValue = dailyStatus
-      .map(({ sectionTitle, tasks }) => {
-        return `${sectionTitle}:\n\n- ${tasks
-          .map(({ value }) => value)
-          .join('\n- ')}`;
-      })
-      .join('\n\n');
+    const {
+      getDaily,
+      hadPlans,
+      dailyStatus,
+			containerScrollCords,
+			currentDate,
+			dailyValue,
+		} = this.state;
 
     return (
       <div className='App'>
@@ -123,17 +144,20 @@ class App extends Component {
               </button>
             </div>
           ) : (
-            <DailyList
-              dailyStatus={dailyStatus}
-              hadPlans={hadPlans}
-              recallPlans={this.recallPlans}
-              applyValue={this.applyValue}
-              handleDelete={this.handleDelete}
-              handleEdit={this.handleEdit}
-							setContainerCords={this.setContainerCords}
-							unsetContainerCords={this.unsetContainerCords}
-							containerScrollCords={containerScrollCords}
-            />
+            <>
+              <DatePanel currentDate={currentDate} setNewDate={this.setNewDate}/>
+              <DailyList
+                dailyStatus={dailyStatus}
+                hadPlans={hadPlans}
+                recallPlans={this.recallPlans}
+                applyValue={this.applyValue}
+                handleDelete={this.handleDelete}
+                handleEdit={this.handleEdit}
+                setContainerCords={this.setContainerCords}
+                unsetContainerCords={this.unsetContainerCords}
+                containerScrollCords={containerScrollCords}
+              />
+            </>
           )}
         </div>
         <button className='get-daily-button' onClick={this.toggleGetDaily}>

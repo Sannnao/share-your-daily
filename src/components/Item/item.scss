@@ -1,18 +1,28 @@
-@import '../../constants.scss';
-
 .item {
+	position: relative;
 	display: flex;
-	justify-content: space-between;
+	justify-content: center;
 	align-items: center;
+	min-height: 50px;
+	height: auto;
 	padding: 10px;
-	padding-left: 10%;
 	margin: 5px 0;
 	border-radius: 10px;
 	box-shadow: 0 2px 5px 1px #d4d8db;
+	transition: min-height 0.3s ease-out;
 
 	&--edit-mode {
-		position: relative;
-		padding: 2%;
+		min-height: 70px;
+		transition: min-height 0.3s ease-out;
+	}
+
+	&__content-container {
+		display: flex;
+		justify-content: space-between;
+		align-items: center;
+		width: 100%;
+		height: 100%;
+		padding-left: 10%;
 	}
 
 	&__buttons-wrapper {

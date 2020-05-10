@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import clsx from 'clsx';
 import './item.scss';
 
@@ -12,7 +12,14 @@ const Item = ({
   taskId,
 }) => {
   const [isEdit, setIsEdit] = useState(false);
-  const [inputValue, setInputValue] = useState('');
+	const [inputValue, setInputValue] = useState('');
+	const inputRef = useRef(null);
+
+	useEffect(() => {
+		if (isEdit) {
+			inputRef.current.focus();
+		}
+	}, [isEdit]);
 
   const handleInput = e => {
     setInputValue(e.target.value);
@@ -34,7 +41,7 @@ const Item = ({
 
   const enableEditMode = () => {
     setIsEdit(true);
-    setInputValue(itemContent);
+		setInputValue(itemContent);
 	};
 
 	const disableEditMode = () => {
@@ -49,11 +56,12 @@ const Item = ({
             handleInput={handleInput}
             inputValue={inputValue}
             applyValue={handleEditTask}
+						ref={inputRef}
           />
 					<button onClick={disableEditMode} className='item__btn item__cancel-btn'>Cancel</button>
 				</>
       ) : (
-        <>
+        <div className='item__content-container'>
           <span className='item__text-wrapper'>- {itemContent}</span>
           <div className='item__buttons-wrapper'>
             <button
@@ -69,7 +77,7 @@ const Item = ({
               X
             </button>
           </div>
-        </>
+        </div>
       )}
     </li>
   );

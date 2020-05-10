@@ -21,7 +21,8 @@ const Section = ({
 
   const applyInputValue = e => {
     if (e.key === 'Enter') {
-      e.preventDefault();
+			e.preventDefault();
+			if (!inputValue) return;
 
       applyValue(inputValue, sectionIndex);
       setInputValue('');

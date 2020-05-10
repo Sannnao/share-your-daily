@@ -15,11 +15,6 @@ body {
 	letter-spacing: 2px;
 }
 
-textarea {
-	line-height: 25px;
-	letter-spacing: 3px;
-}
-
 button {
 	background-color: transparent;
 	border-style: dotted;
