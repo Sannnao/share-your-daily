@@ -104,7 +104,10 @@ class App extends Component {
     this.resultRef.current.select();
     this.resultRef.current.setSelectionRange(0, 99999);
 
-    document.execCommand('copy');
+		document.execCommand('copy');
+		window.getSelection().empty();
+
+		this.setState({ isCopied: true });
   };
 
   setContainerCords = containerScrollCords => {
@@ -123,6 +126,7 @@ class App extends Component {
 			containerScrollCords,
 			currentDate,
 			dailyValue,
+			isCopied,
 		} = this.state;
 
     return (
@@ -140,7 +144,7 @@ class App extends Component {
                 className='result-container__copy-btn'
                 onClick={this.copyResultText}
               >
-                Copy
+                {isCopied ? 'Copied' : 'Copy'}
               </button>
             </div>
           ) : (
