@@ -8,18 +8,21 @@ const Item = ({
   itemContent,
   handleDelete,
   handleEdit,
+  markAchieved,
+  unmarkAchieved,
   sectionIndex,
   taskId,
+  isPlanned,
 }) => {
   const [isEdit, setIsEdit] = useState(false);
-	const [inputValue, setInputValue] = useState('');
-	const inputRef = useRef(null);
+  const [inputValue, setInputValue] = useState('');
+  const inputRef = useRef(null);
 
-	useEffect(() => {
-		if (isEdit) {
-			inputRef.current.focus();
-		}
-	}, [isEdit]);
+  useEffect(() => {
+    if (isEdit) {
+      inputRef.current.focus();
+    }
+  }, [isEdit]);
 
   const handleInput = e => {
     setInputValue(e.target.value);
@@ -41,44 +44,68 @@ const Item = ({
 
   const enableEditMode = () => {
     setIsEdit(true);
-		setInputValue(itemContent);
-	};
+    setInputValue(itemContent);
+  };
 
-	const disableEditMode = () => {
-		setIsEdit(false);
-	}
+  const disableEditMode = () => {
+    setIsEdit(false);
+  };
 
-	const insertLink = (value) => {
-		const stringArr = value.split(' ');
+  const insertLink = value => {
+    const stringArr = value.split(' ');
 
-		const newStringArr = stringArr.map(word => {
-			const linkRegExp = /^https?:\/\//;
-			const isLink = linkRegExp.test(word);
+    const newStringArr = stringArr.map(word => {
+      const linkRegExp = /^https?:\/\//;
+      const isLink = linkRegExp.test(word);
 
-			if (isLink) {
-				return <a href={word} target='__blank'>{ word }</a>
-			}
+      if (isLink) {
+        return (
+          <a href={word} target='__blank'>
+            {word}
+          </a>
+        );
+      }
 
-			return word;
-		})
+      return word;
+    });
 
-		return newStringArr.map((word, i) => <Fragment key={i}>{word}{' '}</Fragment>);
-	}
+    return newStringArr.map((word, i) => <Fragment key={i}>{word} </Fragment>);
+  };
+
+  const toggleAchievedTask = e => {
+    if (e.target.checked) {
+      markAchieved(taskId);
+    } else {
+      unmarkAchieved(taskId);
+    }
+  };
 
   return (
     <li className={clsx('item', { 'item--edit-mode': isEdit })}>
       {isEdit ? (
-				<>
+        <>
           <InputArea
             handleInput={handleInput}
             inputValue={inputValue}
             applyValue={handleEditTask}
-						ref={inputRef}
+            ref={inputRef}
           />
-					<button onClick={disableEditMode} className='item__btn item__cancel-btn'>Cancel</button>
-				</>
+          <button
+            onClick={disableEditMode}
+            className='item__btn item__cancel-btn'
+          >
+            Cancel
+          </button>
+        </>
       ) : (
         <div className='item__content-container'>
+          {isPlanned && (
+            <input
+              type='checkbox'
+              className='item__checkbox'
+              onChange={toggleAchievedTask}
+            />
+          )}
           <p className='item__text-wrapper'>- {insertLink(itemContent)}</p>
           <div className='item__buttons-wrapper'>
             <button

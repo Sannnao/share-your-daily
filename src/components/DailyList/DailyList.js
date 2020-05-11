@@ -3,49 +3,64 @@ import Section from '../Section/Section';
 import './daily-list.scss';
 
 class DailyList extends Component {
-	containerRef = React.createRef();
+  containerRef = React.createRef();
 
-	componentDidMount() {
-		const { containerScrollCords, unsetContainerCords } = this.props;
+  componentDidMount() {
+    const { containerScrollCords, unsetContainerCords } = this.props;
 
-		if (containerScrollCords) {
-			this.containerRef.current.scrollTop = containerScrollCords;
+    if (containerScrollCords) {
+      this.containerRef.current.scrollTop = containerScrollCords;
 
-			unsetContainerCords();
+      unsetContainerCords();
     }
-	}
+  }
 
-	getSnapshotBeforeUpdate(prevProps) {
-		const prevDailyStatus = prevProps.dailyStatus;
-		const { dailyStatus } = this.props;
+  getSnapshotBeforeUpdate(prevProps) {
+    const prevDailyStatus = prevProps.dailyStatus;
+    const { dailyStatus } = this.props;
 
     for (let i = 0; i < prevDailyStatus.length; i++) {
       if (prevDailyStatus[i].tasks.length < dailyStatus[i].tasks.length) {
-				const container = this.containerRef.current;
+        const container = this.containerRef.current;
 
         return container.scrollHeight - container.scrollTop;
       }
-		}
+    }
 
-		return null;
-	}
+    return null;
+  }
 
-	componentDidUpdate(prevProps, prevState, snapshot) {
-		if (snapshot !== null) {
-			const container = this.containerRef.current;
+  componentDidUpdate(prevProps, prevState, snapshot) {
+    if (snapshot !== null) {
+      const container = this.containerRef.current;
 
-			container.scrollTop = container.scrollHeight - snapshot;
-		}
-	}
+      container.scrollTop = container.scrollHeight - snapshot;
+    }
+  }
 
-	componentWillUnmount() {
-		const { setContainerCords } = this.props;
+  componentWillUnmount() {
+    const { setContainerCords } = this.props;
 
-		setContainerCords(this.containerRef.current.scrollTop);
-	}
+    setContainerCords(this.containerRef.current.scrollTop);
+  }
 
   render() {
-		const { dailyStatus, hadPlans, recallPlans, applyValue, handleDelete, handleEdit } = this.props;
+    const {
+      dailyStatus,
+      hadPlans,
+      recallPlans,
+      applyValue,
+      handleDelete,
+      handleEdit,
+      markAchieved,
+			unmarkAchieved,
+			isUnfinishedTasks,
+			addUnfinishedTasks,
+			addedToPlans,
+			cancelAddToPlans,
+			hideAddedToPlans,
+			handleDismiss,
+    } = this.props;
 
     return (
       <div className='daily-list' ref={this.containerRef}>
@@ -62,9 +77,22 @@ class DailyList extends Component {
           if (sectionTitle === 'Planned') {
             Object.assign(sectionProps, {
               hadPlans,
-              recallPlans: recallPlans,
+              recallPlans,
+              markAchieved,
+							unmarkAchieved,
             });
           }
+
+					if (sectionTitle === 'Plans') {
+						Object.assign(sectionProps, {
+              isUnfinishedTasks,
+							addUnfinishedTasks,
+							addedToPlans,
+							cancelAddToPlans,
+							hideAddedToPlans,
+							handleDismiss,
+            });
+					}
 
           return <Section key={i} {...sectionProps} />;
         })}
