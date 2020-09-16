@@ -1,18 +1,18 @@
-import React, { useState } from 'react';
-import './section.scss';
+import React from 'react';
 import Item from '../Item/Item';
 import InputArea from '../InputArea/InputArea';
+import './section.scss';
 
 const Section = ({
   sectionTitle,
   tasks,
+  addTask,
   hadPlans,
   recallPlans,
   handleDelete,
   handleEdit,
 	markAchieved,
 	unmarkAchieved,
-  applyValue,
 	sectionIndex,
 	isUnfinishedTasks,
 	addUnfinishedTasks,
@@ -21,50 +21,33 @@ const Section = ({
 	hideAddedToPlans,
 	handleDismiss,
 }) => {
-  const [inputValue, setInputValue] = useState('');
 
-  const handleInput = e => {
-    setInputValue(e.target.value);
-  };
-
-  const applyInputValue = e => {
-    if (e.key === 'Enter') {
-      e.preventDefault();
-      if (!inputValue) return;
-
-      applyValue(inputValue, sectionIndex);
-      setInputValue('');
-    }
-  };
+  console.log('render section', sectionTitle);
 
   return (
     <section className='section'>
       <h2 className='section__title'>{sectionTitle}:</h2>
-			{isUnfinishedTasks && <div>You have unfinished tasks. Add them to Plans?<button onClick={addUnfinishedTasks}>Add</button><button onClick={handleDismiss}>Dismiss</button></div>}
       <ul className='section__items-list'>
-        {tasks.map(({ id, value }) => {
-          const itemProps = {
-            key: id,
-            taskId: id,
-            itemContent: value,
-            handleDelete,
-            handleEdit,
-            sectionIndex,
-            applyValue,
-          };
-
-          if (sectionTitle === 'Planned') {
-            Object.assign(itemProps, {
-              isPlanned: true,
-              markAchieved,
-							unmarkAchieved,
-            });
-          }
-
-          return <Item {...itemProps} />;
+        {tasks.map(({ text }) => {
+          return <Item itemContent={text} />;
         })}
       </ul>
-			{addedToPlans && <div><button onClick={cancelAddToPlans}>Cancel</button><button onClick={hideAddedToPlans}>Hide</button></div>}
+      <InputArea
+        addTask={addTask}
+      />
+			{/* {isUnfinishedTasks
+        && <div>You have unfinished tasks. Add them to Plans?
+          <button onClick={addUnfinishedTasks}>Add</button>
+          <button onClick={handleDismiss}>Dismiss</button>
+        </div>
+      }
+
+			{addedToPlans
+        && <div>
+          <button onClick={cancelAddToPlans}>Cancel</button>
+          <button onClick={hideAddedToPlans}>Hide</button>
+        </div>
+      }
       <InputArea
         applyValue={applyInputValue}
         handleInput={handleInput}
@@ -74,9 +57,9 @@ const Section = ({
         <button className='section__recall-btn' onClick={recallPlans}>
           Recall plans...
         </button>
-      )}
+      )} */}
     </section>
   );
 };
 
-export default Section;
+export default React.memo(Section);

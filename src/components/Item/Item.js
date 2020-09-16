@@ -6,13 +6,13 @@ import InputArea from '../InputArea/InputArea';
 
 const Item = ({
   itemContent,
-  handleDelete,
-  handleEdit,
-  markAchieved,
-  unmarkAchieved,
-  sectionIndex,
-  taskId,
-  isPlanned,
+  // handleDelete,
+  // handleEdit,
+  // markAchieved,
+  // unmarkAchieved,
+  // sectionIndex,
+  // taskId,
+  // isPlanned,
 }) => {
   const [isEdit, setIsEdit] = useState(false);
   const [inputValue, setInputValue] = useState('');
@@ -28,19 +28,19 @@ const Item = ({
     setInputValue(e.target.value);
   };
 
-  const handleDeleteTask = () => {
-    handleDelete(sectionIndex, taskId);
-  };
+  // const handleDeleteTask = () => {
+  //   handleDelete(sectionIndex, taskId);
+  // };
 
-  const handleEditTask = e => {
-    if (e.key === 'Enter') {
-      e.preventDefault();
-      handleEdit(sectionIndex, taskId, inputValue);
+  // const handleEditTask = e => {
+  //   if (e.key === 'Enter') {
+  //     e.preventDefault();
+  //     handleEdit(sectionIndex, taskId, inputValue);
 
-      setIsEdit(false);
-      setInputValue('');
-    }
-  };
+  //     setIsEdit(false);
+  //     setInputValue('');
+  //   }
+  // };
 
   const enableEditMode = () => {
     setIsEdit(true);
@@ -72,17 +72,18 @@ const Item = ({
     return newStringArr.map((word, i) => <Fragment key={i}>{word} </Fragment>);
   };
 
-  const toggleAchievedTask = e => {
-    if (e.target.checked) {
-      markAchieved(taskId);
-    } else {
-      unmarkAchieved(taskId);
-    }
-  };
+  // const toggleAchievedTask = e => {
+  //   if (e.target.checked) {
+  //     markAchieved(taskId);
+  //   } else {
+  //     unmarkAchieved(taskId);
+  //   }
+  // };
 
   return (
     <li className={clsx('item', { 'item--edit-mode': isEdit })}>
-      {isEdit ? (
+      <p className='item__text-wrapper'>- {insertLink(itemContent)}</p>
+      {/* {isEdit ? (
         <>
           <InputArea
             handleInput={handleInput}
@@ -122,7 +123,7 @@ const Item = ({
             </button>
           </div>
         </div>
-      )}
+      )} */}
     </li>
   );
 };

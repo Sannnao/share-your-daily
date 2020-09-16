@@ -7,11 +7,6 @@ import DailyList from './components/DailyList/DailyList';
 
 class App extends Component {
   state = {
-    dailyStatus: [
-      { sectionTitle: 'Planned', tasks: [] },
-      { sectionTitle: 'Achieved', tasks: [] },
-      { sectionTitle: 'Plans', tasks: [] },
-    ],
     getDaily: false,
     hadPlans: false,
     containerScrollCords: null,
@@ -192,16 +187,6 @@ class App extends Component {
     });
   };
 
-  applyValue = (value, sectionIndex) => {
-    this.setState(({ dailyStatus }) => {
-      const copyDaily = cloneDeep(dailyStatus);
-      const id = Math.floor(Math.random() * 1e6);
-      copyDaily[sectionIndex].tasks.push({ id: id, value });
-
-      return { dailyStatus: copyDaily };
-    });
-  };
-
   copyResultText = () => {
     this.resultRef.current.select();
     this.resultRef.current.setSelectionRange(0, 99999);
@@ -234,7 +219,6 @@ class App extends Component {
     const {
       getDaily,
       hadPlans,
-      dailyStatus,
       containerScrollCords,
       currentDate,
       dailyValue,
@@ -267,7 +251,6 @@ class App extends Component {
                 setNewDate={this.setNewDate}
               />
               <DailyList
-                dailyStatus={dailyStatus}
                 hadPlans={hadPlans}
                 recallPlans={this.recallPlans}
                 applyValue={this.applyValue}
@@ -278,9 +261,6 @@ class App extends Component {
                 setContainerCords={this.setContainerCords}
                 unsetContainerCords={this.unsetContainerCords}
                 containerScrollCords={containerScrollCords}
-                isUnfinishedTasks={this.chechIsUnfinishedTasks(
-                  dailyStatus[0].tasks
-                )}
                 addUnfinishedTasks={this.addUnfinishedTasks}
                 addedToPlans={addedToPlans}
                 cancelAddToPlans={this.cancelAddToPlans}

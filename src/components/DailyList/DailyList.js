@@ -1,4 +1,7 @@
 import React, { Component } from 'react';
+import { connect } from 'react-redux';
+import { PLANNED, ACHIEVED, PLANS } from '../../constants/sectionNames';
+import { addPlanned, addAchieved, addPlans } from '../../actions/';
 import Section from '../Section/Section';
 import './daily-list.scss';
 
@@ -16,15 +19,25 @@ class DailyList extends Component {
   }
 
   getSnapshotBeforeUpdate(prevProps) {
-    const prevDailyStatus = prevProps.dailyStatus;
-    const { dailyStatus } = this.props;
+    const {
+      plannedTasks: prevPlannedTasks,
+      achievedTasks: prevAchievedTasks,
+      plansTasks: prevPlansTasks,
+    } = prevProps;
+    const {
+      plannedTasks,
+      achievedTasks,
+      plansTasks,
+    } = this.props;
 
-    for (let i = 0; i < prevDailyStatus.length; i++) {
-      if (prevDailyStatus[i].tasks.length < dailyStatus[i].tasks.length) {
-        const container = this.containerRef.current;
+    if (
+      prevPlannedTasks.length < plannedTasks.length
+      || prevAchievedTasks.length < achievedTasks.length
+      || prevPlansTasks.length < plansTasks
+    ) {
+      const container = this.containerRef.current;
 
-        return container.scrollHeight - container.scrollTop;
-      }
+      return container.scrollHeight - container.scrollTop;
     }
 
     return null;
@@ -46,6 +59,12 @@ class DailyList extends Component {
 
   render() {
     const {
+      plannedTasks,
+      achievedTasks,
+      plansTasks,
+      addPlanned,
+      addAchieved,
+      addPlans,
       dailyStatus,
       hadPlans,
       recallPlans,
@@ -62,43 +81,44 @@ class DailyList extends Component {
 			handleDismiss,
     } = this.props;
 
+    console.log('renderDailyList');
+
     return (
       <div className='daily-list' ref={this.containerRef}>
-        {dailyStatus.map(({ sectionTitle, tasks }, i) => {
-          const sectionProps = {
-            sectionIndex: i,
-            sectionTitle,
-            tasks,
-            applyValue: applyValue,
-            handleDelete: handleDelete,
-            handleEdit: handleEdit,
-          };
-
-          if (sectionTitle === 'Planned') {
-            Object.assign(sectionProps, {
-              hadPlans,
-              recallPlans,
-              markAchieved,
-							unmarkAchieved,
-            });
-          }
-
-					if (sectionTitle === 'Plans') {
-						Object.assign(sectionProps, {
-              isUnfinishedTasks,
-							addUnfinishedTasks,
-							addedToPlans,
-							cancelAddToPlans,
-							hideAddedToPlans,
-							handleDismiss,
-            });
-					}
-
-          return <Section key={i} {...sectionProps} />;
-        })}
+        <Section
+          sectionTitle={PLANNED}
+          tasks={plannedTasks}
+          addTask={addPlanned}
+        />
+        <Section
+          sectionTitle={ACHIEVED}
+          tasks={achievedTasks}
+          addTask={addAchieved}
+        />
+        <Section
+          sectionTitle={PLANS}
+          tasks={plansTasks}
+          addTask={addPlans}
+        />
       </div>
     );
   }
 }
 
-export default DailyList;
+const mapState = (state) => {
+  const {
+    plannedTasks,
+    achievedTasks,
+    plansTasks,
+  } = state;
+
+  return {
+    plannedTasks,
+    achievedTasks,
+    plansTasks,
+  }
+}
+
+const mapDispatch = { addPlanned, addAchieved, addPlans };
+
+export default connect(mapState, mapDispatch)(DailyList);
