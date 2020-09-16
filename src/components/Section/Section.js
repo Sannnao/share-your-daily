@@ -2,6 +2,7 @@ import React from 'react';
 import Item from '../Item/Item';
 import InputArea from '../InputArea/InputArea';
 import './section.scss';
+import { PLANNED } from '../../constants/sectionNames';
 
 const Section = ({
   sectionTitle,
@@ -28,8 +29,15 @@ const Section = ({
     <section className='section'>
       <h2 className='section__title'>{sectionTitle}:</h2>
       <ul className='section__items-list'>
-        {tasks.map(({ text }) => {
-          return <Item itemContent={text} />;
+        {tasks.map(({ id, text }) => {
+          return (
+            <Item
+              taskId={id}
+              itemContent={text}
+              isPlanned={sectionTitle === PLANNED}
+              handleEdit={handleEdit}
+            />
+          );
         })}
       </ul>
       <InputArea

@@ -1,7 +1,14 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { PLANNED, ACHIEVED, PLANS } from '../../constants/sectionNames';
-import { addPlanned, addAchieved, addPlans } from '../../actions/';
+import {
+  addPlanned,
+  addAchieved,
+  addPlans,
+  editPlanned,
+  editAchieved,
+  editPlans,
+} from '../../actions/';
 import Section from '../Section/Section';
 import './daily-list.scss';
 
@@ -65,6 +72,9 @@ class DailyList extends Component {
       addPlanned,
       addAchieved,
       addPlans,
+      editPlanned,
+      editAchieved,
+      editPlans,
       dailyStatus,
       hadPlans,
       recallPlans,
@@ -89,16 +99,19 @@ class DailyList extends Component {
           sectionTitle={PLANNED}
           tasks={plannedTasks}
           addTask={addPlanned}
+          handleEdit={editPlanned}
         />
         <Section
           sectionTitle={ACHIEVED}
           tasks={achievedTasks}
           addTask={addAchieved}
+          handleEdit={editAchieved}
         />
         <Section
           sectionTitle={PLANS}
           tasks={plansTasks}
           addTask={addPlans}
+          handleEdit={editPlans}
         />
       </div>
     );
@@ -119,6 +132,13 @@ const mapState = (state) => {
   }
 }
 
-const mapDispatch = { addPlanned, addAchieved, addPlans };
+const mapDispatch = {
+  addPlanned,
+  addAchieved,
+  addPlans,
+  editPlanned,
+  editAchieved,
+  editPlans,
+};
 
 export default connect(mapState, mapDispatch)(DailyList);

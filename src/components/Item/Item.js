@@ -7,15 +7,14 @@ import InputArea from '../InputArea/InputArea';
 const Item = ({
   itemContent,
   // handleDelete,
-  // handleEdit,
+  handleEdit,
   // markAchieved,
   // unmarkAchieved,
   // sectionIndex,
-  // taskId,
-  // isPlanned,
+  taskId,
+  isPlanned,
 }) => {
   const [isEdit, setIsEdit] = useState(false);
-  const [inputValue, setInputValue] = useState('');
   const inputRef = useRef(null);
 
   useEffect(() => {
@@ -24,27 +23,18 @@ const Item = ({
     }
   }, [isEdit]);
 
-  const handleInput = e => {
-    setInputValue(e.target.value);
-  };
-
   // const handleDeleteTask = () => {
   //   handleDelete(sectionIndex, taskId);
   // };
 
-  // const handleEditTask = e => {
-  //   if (e.key === 'Enter') {
-  //     e.preventDefault();
-  //     handleEdit(sectionIndex, taskId, inputValue);
+  const handleEditTask = value => {
+    handleEdit(taskId, value);
 
-  //     setIsEdit(false);
-  //     setInputValue('');
-  //   }
-  // };
+    setIsEdit(false);
+  };
 
   const enableEditMode = () => {
     setIsEdit(true);
-    setInputValue(itemContent);
   };
 
   const disableEditMode = () => {
@@ -80,10 +70,36 @@ const Item = ({
   //   }
   // };
 
+  console.log(taskId);
+
   return (
     <li className={clsx('item', { 'item--edit-mode': isEdit })}>
-      <p className='item__text-wrapper'>- {insertLink(itemContent)}</p>
-      {/* {isEdit ? (
+    {isEdit
+      ?  <>
+          <InputArea
+            addTask={handleEditTask}
+            existingValue={itemContent}
+            ref={inputRef}
+          />
+          <button
+            onClick={disableEditMode}
+            className='item__btn item__cancel-btn'
+          >
+            Cancel
+          </button>
+        </>
+      : <div className='item__content-container'>
+          <p className='item__text-wrapper'>- {insertLink(itemContent)}</p>
+          <div className='item__buttons-wrapper'>
+            <button
+              onClick={enableEditMode}
+              className='item__btn item__edit-btn'
+            >
+              Edit
+            </button>
+          </div>
+        </div>
+      /* {isEdit ? (
         <>
           <InputArea
             handleInput={handleInput}
@@ -123,7 +139,8 @@ const Item = ({
             </button>
           </div>
         </div>
-      )} */}
+      )} */
+      }
     </li>
   );
 };

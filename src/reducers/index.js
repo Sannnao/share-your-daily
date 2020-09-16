@@ -1,22 +1,15 @@
-import { ADD_PLANNED, ADD_ACHIEVED, ADD_PLANS } from '../actions';
+import {
+  ADD_PLANNED,
+  ADD_ACHIEVED,
+  ADD_PLANS,
+  EDIT_PLANNED,
+  EDIT_ACHIEVED,
+  EDIT_PLANS,
+} from '../actions';
 import { PLANNED, ACHIEVED, PLANS } from '../constants/sectionNames';
 
 const listEditor = (state = [], action) => {
   switch (action.type) {
-    case 'ADD_TASK':
-      return [
-        ...state,
-        {
-          text: action.text,
-        },
-      ];
-    case 'EDIT': {
-      const newState = [...state];
-
-      newState[action.index].text = action.text;
-
-      return newState;
-    }
     case 'TOGGLE': {
       const newState = [...state];
 
@@ -31,17 +24,31 @@ const listEditor = (state = [], action) => {
   }
 };
 
-const addTask = (where, value) => ([
-  ...where,
+const addTask = (state, id, text) => ([
+  ...state,
   {
-    text: value,
+    id,
+    text,
   },
 ])
+
+const editTask = (state, id, text) => {
+  return state.map((task) => {
+    return task.id === id
+      ? {
+        ...task,
+        text,
+      }
+      : task;
+  });
+}
 
 const plannedTasks = (state = [], action) => {
   switch (action.type) {
     case ADD_PLANNED:
-      return addTask(state, action.text);
+      return addTask(state, action.id, action.text);
+    case EDIT_PLANNED:
+      return editTask(state, action.id, action.text);
     default:
       return state;
   }
@@ -50,7 +57,9 @@ const plannedTasks = (state = [], action) => {
 const achievedTasks = (state = [], action) => {
   switch (action.type) {
     case ADD_ACHIEVED:
-      return addTask(state, action.text);
+      return addTask(state, action.id, action.text);
+    case EDIT_ACHIEVED:
+      return editTask(state, action.id, action.text);
     default:
       return state;
   }
@@ -59,7 +68,9 @@ const achievedTasks = (state = [], action) => {
 const plansTasks = (state = [], action) => {
   switch (action.type) {
     case ADD_PLANS:
-      return addTask(state, action.text);
+      return addTask(state, action.id, action.text);
+    case EDIT_PLANS:
+      return editTask(state, action.id, action.text);
     default:
       return state;
   }

@@ -1,8 +1,13 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import './input-area.scss';
 
-const InputArea = React.forwardRef(({ addTask }, ref) => {
+const InputArea = React.forwardRef(({ addTask, existingValue }, ref) => {
   const [inputValue, setInputValue] = useState('');
+
+  useEffect(() => {
+    if (existingValue)
+      setInputValue(existingValue);
+  }, [])
 
   const handleInput = e => {
     setInputValue(e.target.value);
