@@ -6,8 +6,8 @@ import InputArea from '../InputArea/InputArea';
 
 const Item = ({
   itemContent,
-  // handleDelete,
   handleEdit,
+  handleDelete,
   // markAchieved,
   // unmarkAchieved,
   // sectionIndex,
@@ -23,10 +23,6 @@ const Item = ({
     }
   }, [isEdit]);
 
-  // const handleDeleteTask = () => {
-  //   handleDelete(sectionIndex, taskId);
-  // };
-
   const handleEditTask = value => {
     handleEdit(taskId, value);
 
@@ -39,6 +35,10 @@ const Item = ({
 
   const disableEditMode = () => {
     setIsEdit(false);
+  };
+
+  const handleDeleteTask = () => {
+    handleDelete(taskId);
   };
 
   const insertLink = value => {
@@ -97,40 +97,6 @@ const Item = ({
             >
               Edit
             </button>
-          </div>
-        </div>
-      /* {isEdit ? (
-        <>
-          <InputArea
-            handleInput={handleInput}
-            inputValue={inputValue}
-            applyValue={handleEditTask}
-            ref={inputRef}
-          />
-          <button
-            onClick={disableEditMode}
-            className='item__btn item__cancel-btn'
-          >
-            Cancel
-          </button>
-        </>
-      ) : (
-        <div className='item__content-container'>
-          {isPlanned && (
-            <input
-              type='checkbox'
-              className='item__checkbox'
-              onChange={toggleAchievedTask}
-            />
-          )}
-          <p className='item__text-wrapper'>- {insertLink(itemContent)}</p>
-          <div className='item__buttons-wrapper'>
-            <button
-              onClick={enableEditMode}
-              className='item__btn item__edit-btn'
-            >
-              Edit
-            </button>
             <button
               onClick={handleDeleteTask}
               className='item__btn item__del-btn'
@@ -139,7 +105,15 @@ const Item = ({
             </button>
           </div>
         </div>
-      )} */
+      /*
+          {isPlanned && (
+            <input
+              type='checkbox'
+              className='item__checkbox'
+              onChange={toggleAchievedTask}
+            />
+          )}
+      */
       }
     </li>
   );

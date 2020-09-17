@@ -1,3 +1,4 @@
+import { combineReducers } from 'redux';
 import {
   ADD_PLANNED,
   ADD_ACHIEVED,
@@ -5,24 +6,11 @@ import {
   EDIT_PLANNED,
   EDIT_ACHIEVED,
   EDIT_PLANS,
+  DELETE_PLANNED,
+  DELETE_ACHIEVED,
+  DELETE_PLANS,
 } from '../actions';
 import { PLANNED, ACHIEVED, PLANS } from '../constants/sectionNames';
-
-const listEditor = (state = [], action) => {
-  switch (action.type) {
-    case 'TOGGLE': {
-      const newState = [...state];
-
-      newState[action.index].achieved = !newState[action.index].achieved;
-
-      return newState;
-    }
-    case 'DELETE':
-      return [...state].splice(action.index, 1);
-    default:
-      return state;
-  }
-};
 
 const addTask = (state, id, text) => ([
   ...state,
@@ -43,12 +31,18 @@ const editTask = (state, id, text) => {
   });
 }
 
+const deleteTask = (state, id) => {
+  return state.filter((task) => task.id !== id);
+}
+
 const plannedTasks = (state = [], action) => {
   switch (action.type) {
     case ADD_PLANNED:
       return addTask(state, action.id, action.text);
     case EDIT_PLANNED:
       return editTask(state, action.id, action.text);
+    case DELETE_PLANNED:
+      return deleteTask(state, action.id);
     default:
       return state;
   }
@@ -60,6 +54,8 @@ const achievedTasks = (state = [], action) => {
       return addTask(state, action.id, action.text);
     case EDIT_ACHIEVED:
       return editTask(state, action.id, action.text);
+    case DELETE_ACHIEVED:
+      return deleteTask(state, action.id);
     default:
       return state;
   }
@@ -71,18 +67,18 @@ const plansTasks = (state = [], action) => {
       return addTask(state, action.id, action.text);
     case EDIT_PLANS:
       return editTask(state, action.id, action.text);
+    case DELETE_PLANS:
+      return deleteTask(state, action.id);
     default:
       return state;
   }
 }
 
-const rootReducer = (state = {}, action) => {
-  return {
-    ...state,
-    plannedTasks: plannedTasks(state.plannedTasks, action),
-    achievedTasks: achievedTasks(state.achievedTasks, action),
-    plansTasks: plansTasks(state.plansTasks, action),
-  }
-}
+const rootReducer = combineReducers({
+    plannedTasks: plannedTasks,
+    achievedTasks: achievedTasks,
+    plansTasks: plansTasks,
+  })
+
 
 export default rootReducer;

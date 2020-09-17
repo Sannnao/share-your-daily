@@ -32,10 +32,12 @@ const Section = ({
         {tasks.map(({ id, text }) => {
           return (
             <Item
+              key={id}
               taskId={id}
               itemContent={text}
               isPlanned={sectionTitle === PLANNED}
               handleEdit={handleEdit}
+              handleDelete={handleDelete}
             />
           );
         })}

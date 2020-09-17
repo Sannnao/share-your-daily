@@ -8,6 +8,9 @@ import {
   editPlanned,
   editAchieved,
   editPlans,
+  deletePlanned,
+  deleteAchieved,
+  deletePlans,
 } from '../../actions/';
 import Section from '../Section/Section';
 import './daily-list.scss';
@@ -75,6 +78,9 @@ class DailyList extends Component {
       editPlanned,
       editAchieved,
       editPlans,
+      deletePlanned,
+      deleteAchieved,
+      deletePlans,
       dailyStatus,
       hadPlans,
       recallPlans,
@@ -100,18 +106,21 @@ class DailyList extends Component {
           tasks={plannedTasks}
           addTask={addPlanned}
           handleEdit={editPlanned}
+          handleDelete={deletePlanned}
         />
         <Section
           sectionTitle={ACHIEVED}
           tasks={achievedTasks}
           addTask={addAchieved}
           handleEdit={editAchieved}
+          handleDelete={deleteAchieved}
         />
         <Section
           sectionTitle={PLANS}
           tasks={plansTasks}
           addTask={addPlans}
           handleEdit={editPlans}
+          handleDelete={deletePlans}
         />
       </div>
     );
@@ -139,6 +148,9 @@ const mapDispatch = {
   editPlanned,
   editAchieved,
   editPlans,
+  deletePlanned,
+  deleteAchieved,
+  deletePlans,
 };
 
 export default connect(mapState, mapDispatch)(DailyList);
