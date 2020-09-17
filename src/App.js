@@ -40,28 +40,6 @@ class App extends Component {
     });
   };
 
-  markAchieved = taskId => {
-    this.setState(({ dailyStatus }) => {
-      const copyDaily = cloneDeep(dailyStatus);
-			const plannedTasks = copyDaily[0].tasks;
-			const plansTasks = copyDaily[2].tasks;
-      const achievedTaskIndex = plannedTasks.findIndex(
-        task => task.id === taskId
-      );
-			const copyAchievedTask = { ...plannedTasks[achievedTaskIndex] };
-			const plansTaskIndex = plansTasks.findIndex(task => task.id === taskId);
-			if (plansTaskIndex !== -1) {
-				plansTasks.splice(plansTaskIndex, 1);
-				copyDaily[0].tasks[achievedTaskIndex].fromPlans = true;
-			}
-
-      copyDaily[1].tasks.push(copyAchievedTask);
-      copyDaily[0].tasks[achievedTaskIndex].isFinished = true;
-
-      return { dailyStatus: copyDaily };
-    });
-  };
-
   unmarkAchieved = taskId => {
     this.setState(({ dailyStatus }) => {
       const copyDaily = cloneDeep(dailyStatus);
@@ -256,7 +234,6 @@ class App extends Component {
                 applyValue={this.applyValue}
                 handleDelete={this.handleDelete}
                 handleEdit={this.handleEdit}
-                markAchieved={this.markAchieved}
                 unmarkAchieved={this.unmarkAchieved}
                 setContainerCords={this.setContainerCords}
                 unsetContainerCords={this.unsetContainerCords}

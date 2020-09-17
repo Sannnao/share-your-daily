@@ -8,9 +8,10 @@ const Item = ({
   itemContent,
   handleEdit,
   handleDelete,
-  // markAchieved,
-  // unmarkAchieved,
+  markAchieved,
+  unmarkAchieved,
   // sectionIndex,
+  togglePlanned,
   taskId,
   isPlanned,
 }) => {
@@ -62,13 +63,13 @@ const Item = ({
     return newStringArr.map((word, i) => <Fragment key={i}>{word} </Fragment>);
   };
 
-  // const toggleAchievedTask = e => {
-  //   if (e.target.checked) {
-  //     markAchieved(taskId);
-  //   } else {
-  //     unmarkAchieved(taskId);
-  //   }
-  // };
+  const toggleAchievedTask = (e) => {
+    if (e.target.checked) {
+      markAchieved(taskId, itemContent);
+    } else {
+      unmarkAchieved(taskId);
+    }
+  };
 
   console.log(taskId);
 
@@ -89,6 +90,13 @@ const Item = ({
           </button>
         </>
       : <div className='item__content-container'>
+          {isPlanned && (
+            <input
+              type='checkbox'
+              className='item__checkbox'
+              onChange={toggleAchievedTask}
+            />
+          )}
           <p className='item__text-wrapper'>- {insertLink(itemContent)}</p>
           <div className='item__buttons-wrapper'>
             <button
@@ -105,15 +113,6 @@ const Item = ({
             </button>
           </div>
         </div>
-      /*
-          {isPlanned && (
-            <input
-              type='checkbox'
-              className='item__checkbox'
-              onChange={toggleAchievedTask}
-            />
-          )}
-      */
       }
     </li>
   );

@@ -11,6 +11,8 @@ import {
   deletePlanned,
   deleteAchieved,
   deletePlans,
+  togglePlanned,
+  markPlannedAchieved,
 } from '../../actions/';
 import Section from '../Section/Section';
 import './daily-list.scss';
@@ -67,6 +69,20 @@ class DailyList extends Component {
     setContainerCords(this.containerRef.current.scrollTop);
   }
 
+  markAchieved = (id, text) => {
+    const { markPlannedAchieved } = this.props;
+
+    markPlannedAchieved(id, text);
+    togglePlanned(id);
+  }
+
+  unmarkAchieved = (id) => {
+    const { deleteAchieved } = this.props;
+
+    deleteAchieved(id);
+    togglePlanned(id);
+  }
+
   render() {
     const {
       plannedTasks,
@@ -81,14 +97,11 @@ class DailyList extends Component {
       deletePlanned,
       deleteAchieved,
       deletePlans,
+      togglePlanned,
       dailyStatus,
       hadPlans,
       recallPlans,
       applyValue,
-      handleDelete,
-      handleEdit,
-      markAchieved,
-			unmarkAchieved,
 			isUnfinishedTasks,
 			addUnfinishedTasks,
 			addedToPlans,
@@ -107,6 +120,8 @@ class DailyList extends Component {
           addTask={addPlanned}
           handleEdit={editPlanned}
           handleDelete={deletePlanned}
+          markAchieved={this.markAchieved}
+          unmarkAchieved={this.unmarkAchieved}
         />
         <Section
           sectionTitle={ACHIEVED}
@@ -151,6 +166,8 @@ const mapDispatch = {
   deletePlanned,
   deleteAchieved,
   deletePlans,
+  togglePlanned,
+  markPlannedAchieved,
 };
 
 export default connect(mapState, mapDispatch)(DailyList);

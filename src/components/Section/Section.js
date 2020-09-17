@@ -12,6 +12,7 @@ const Section = ({
   recallPlans,
   handleDelete,
   handleEdit,
+  togglePlanned,
 	markAchieved,
 	unmarkAchieved,
 	sectionIndex,
@@ -38,6 +39,8 @@ const Section = ({
               isPlanned={sectionTitle === PLANNED}
               handleEdit={handleEdit}
               handleDelete={handleDelete}
+              markAchieved={markAchieved}
+              unmarkAchieved={unmarkAchieved}
             />
           );
         })}

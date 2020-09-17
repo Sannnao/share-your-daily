@@ -12,11 +12,16 @@ export const DELETE_PLANNED = 'DELETE_PLANNED';
 export const DELETE_ACHIEVED = 'DELETE_ACHIEVED';
 export const DELETE_PLANS = 'DELETE_PLANS';
 
+export const TOGGLE_PLANNED = 'TOGGLE_PLANNED';
+
+export const MARK_PLANNED_ACHIEVED = 'MARK_PLANNED_ACHIEVED';
+
 export const addPlanned = (text) => {
   return {
     type: ADD_PLANNED,
     id: v4(),
     text,
+    achieved: false,
   }
 }
 
@@ -78,5 +83,20 @@ export const deletePlans = (id) => {
   return {
     type: DELETE_PLANS,
     id,
+  }
+}
+
+export const togglePlanned = (id) => {
+  return {
+    type: TOGGLE_PLANNED,
+    id,
+  }
+}
+
+export const markPlannedAchieved = (id, text) => {
+  return {
+    type: MARK_PLANNED_ACHIEVED,
+    id,
+    text,
   }
 }

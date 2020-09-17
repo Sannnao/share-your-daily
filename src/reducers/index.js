@@ -9,6 +9,8 @@ import {
   DELETE_PLANNED,
   DELETE_ACHIEVED,
   DELETE_PLANS,
+  TOGGLE_PLANNED,
+  MARK_PLANNED_ACHIEVED,
 } from '../actions';
 import { PLANNED, ACHIEVED, PLANS } from '../constants/sectionNames';
 
@@ -43,6 +45,15 @@ const plannedTasks = (state = [], action) => {
       return editTask(state, action.id, action.text);
     case DELETE_PLANNED:
       return deleteTask(state, action.id);
+    case TOGGLE_PLANNED:
+      return [...state].map((task) => {
+        return task.id === action.id
+          ? {
+            ...task,
+            achieved: !task.achieved,
+          }
+          : task;
+      });
     default:
       return state;
   }
@@ -51,6 +62,8 @@ const plannedTasks = (state = [], action) => {
 const achievedTasks = (state = [], action) => {
   switch (action.type) {
     case ADD_ACHIEVED:
+      return addTask(state, action.id, action.text);
+    case MARK_PLANNED_ACHIEVED:
       return addTask(state, action.id, action.text);
     case EDIT_ACHIEVED:
       return editTask(state, action.id, action.text);
