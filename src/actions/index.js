@@ -16,6 +16,8 @@ export const TOGGLE_PLANNED = 'TOGGLE_PLANNED';
 
 export const MARK_PLANNED_ACHIEVED = 'MARK_PLANNED_ACHIEVED';
 
+export const ADD_UNFINISHED_TO_PLANS = 'ADD_UNFINISHED_TO_PLANS';
+
 export const addPlanned = (text) => {
   return {
     type: ADD_PLANNED,
@@ -98,5 +100,14 @@ export const markPlannedAchieved = (id, text) => {
     type: MARK_PLANNED_ACHIEVED,
     id,
     text,
+  }
+}
+
+export const addUnfinishedToPlans = (id, text) => {
+  return {
+    type: ADD_UNFINISHED_TO_PLANS,
+    id,
+    text,
+    fromPlanned: true,
   }
 }

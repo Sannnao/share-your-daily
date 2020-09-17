@@ -13,11 +13,16 @@ import {
   deletePlans,
   togglePlanned,
   markPlannedAchieved,
+  addUnfinishedToPlans,
 } from '../../actions/';
 import Section from '../Section/Section';
 import './daily-list.scss';
 
 class DailyList extends Component {
+  state = {
+    isDismissed: false,
+  };
+
   containerRef = React.createRef();
 
   componentDidMount() {
@@ -70,17 +75,40 @@ class DailyList extends Component {
   }
 
   markAchieved = (id, text) => {
-    const { markPlannedAchieved } = this.props;
+    const { markPlannedAchieved, togglePlanned } = this.props;
 
     markPlannedAchieved(id, text);
     togglePlanned(id);
   }
 
   unmarkAchieved = (id) => {
-    const { deleteAchieved } = this.props;
+    const { deleteAchieved, togglePlanned } = this.props;
 
     deleteAchieved(id);
     togglePlanned(id);
+  }
+
+  chechIsUnfinishedTasks = () => {
+    const { isDismissed } = this.state;
+    const { plannedTasks } = this.props;
+
+    return plannedTasks.filter(task => !task.achieved).length > 0
+      && !isDismissed;
+  };
+
+  addUnfinishedTasks = () => {
+    const { plannedTasks, addUnfinishedToPlans } = this.props;
+
+    plannedTasks.forEach(({id, text, achieved}) => {
+      if (!achieved)
+        addUnfinishedToPlans(id, text);
+    })
+
+    this.setState({ isDismissed: true });
+  }
+
+  handleDismiss = () => {
+    this.setState({ isDismissed: true });
   }
 
   render() {
@@ -103,14 +131,13 @@ class DailyList extends Component {
       recallPlans,
       applyValue,
 			isUnfinishedTasks,
-			addUnfinishedTasks,
 			addedToPlans,
 			cancelAddToPlans,
 			hideAddedToPlans,
-			handleDismiss,
     } = this.props;
 
     console.log('renderDailyList');
+    console.log(plannedTasks);
 
     return (
       <div className='daily-list' ref={this.containerRef}>
@@ -123,6 +150,12 @@ class DailyList extends Component {
           markAchieved={this.markAchieved}
           unmarkAchieved={this.unmarkAchieved}
         />
+        {this.chechIsUnfinishedTasks()
+          && <div>You have unfinished tasks. Add them to Plans?
+            <button onClick={this.addUnfinishedTasks}>Add</button>
+            <button onClick={this.handleDismiss}>Dismiss</button>
+          </div>
+        }
         <Section
           sectionTitle={ACHIEVED}
           tasks={achievedTasks}
@@ -168,6 +201,7 @@ const mapDispatch = {
   deletePlans,
   togglePlanned,
   markPlannedAchieved,
+  addUnfinishedToPlans,
 };
 
 export default connect(mapState, mapDispatch)(DailyList);

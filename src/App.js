@@ -183,16 +183,6 @@ class App extends Component {
     this.setState({ containerScrollCords: null });
   };
 
-  chechIsUnfinishedTasks = tasks => {
-		const { isDismissed } = this.state;
-
-		console.log(tasks.filter(task => !task.isFinished).filter(task => !task.addedToPlans));
-
-		return !isDismissed && tasks
-			.filter(task => !task.isFinished)
-			.filter(task => !task.isAddedToPlans).length > 0;
-	};
-
   render() {
     const {
       getDaily,

@@ -16,12 +16,9 @@ const Section = ({
 	markAchieved,
 	unmarkAchieved,
 	sectionIndex,
-	isUnfinishedTasks,
-	addUnfinishedTasks,
 	addedToPlans,
 	cancelAddToPlans,
 	hideAddedToPlans,
-	handleDismiss,
 }) => {
 
   console.log('render section', sectionTitle);
@@ -48,12 +45,7 @@ const Section = ({
       <InputArea
         addTask={addTask}
       />
-			{/* {isUnfinishedTasks
-        && <div>You have unfinished tasks. Add them to Plans?
-          <button onClick={addUnfinishedTasks}>Add</button>
-          <button onClick={handleDismiss}>Dismiss</button>
-        </div>
-      }
+			{/*
 
 			{addedToPlans
         && <div>
