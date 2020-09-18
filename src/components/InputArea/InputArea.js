@@ -7,7 +7,7 @@ const InputArea = React.forwardRef(({ addTask, existingValue }, ref) => {
   useEffect(() => {
     if (existingValue)
       setInputValue(existingValue);
-  }, []);
+  }, [existingValue]);
 
   const handleInput = e => {
     setInputValue(e.target.value);

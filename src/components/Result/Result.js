@@ -24,7 +24,12 @@ const Result = ({
     const dailyValue = `${dateArr.reverse().join('.')}\n\n${PLANNED}\n\n${plannedTasks.map(({ text }) => `- ${text}`).join('\n')}\n\n${ACHIEVED}\n\n${achievedTasks.map(({ text }) => `- ${text}`).join('\n')}\n\n${PLANS}\n\n${plansTasks.map(({ text }) => `- ${text}`).join('\n')}
     `
     setDailyValue(dailyValue);
-  }, []);
+  }, [
+    currentDate,
+    plannedTasks,
+    achievedTasks,
+    plansTasks,
+  ]);
 
   const copyResultText = () => {
     resultRef.current.select();
