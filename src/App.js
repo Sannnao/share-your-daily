@@ -52,13 +52,9 @@ class App extends Component {
 
   render() {
     const {
-      getDaily,
       hadPlans,
       containerScrollCords,
       currentDate,
-      dailyValue,
-      isCopied,
-      addedToPlans,
     } = this.state;
 
     return (
@@ -83,12 +79,12 @@ class App extends Component {
                   unsetContainerCords={this.unsetContainerCords}
                   containerScrollCords={containerScrollCords}
                 />
+                <Link to='/result' className='get-daily-button'>
+                  Get daily status!'
+                </Link>
               </>
             </Route>
           </div>
-          <Link to='/result' className='get-daily-button'>
-            Get daily status!'
-          </Link>
         </div>
       </Router>
     );

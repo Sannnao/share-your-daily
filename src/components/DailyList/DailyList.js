@@ -14,6 +14,7 @@ import {
   togglePlanned,
   markPlannedAchieved,
   addUnfinishedToPlans,
+  cancelAddToPlans,
 } from '../../actions/';
 import Section from '../Section/Section';
 import './daily-list.scss';
@@ -21,6 +22,7 @@ import './daily-list.scss';
 class DailyList extends Component {
   state = {
     isDismissed: false,
+    addedToPlans: false,
   };
 
   containerRef = React.createRef();
@@ -104,14 +106,29 @@ class DailyList extends Component {
         addUnfinishedToPlans(id, text);
     })
 
-    this.setState({ isDismissed: true });
+    this.setState({ isDismissed: true, addedToPlans: true });
   }
 
   handleDismiss = () => {
     this.setState({ isDismissed: true });
   }
 
+  cancelAddToPlans = () => {
+    const { cancelAddToPlans } = this.props;
+
+    cancelAddToPlans();
+    this.hideAddedToPlans();
+  }
+
+  hideAddedToPlans = () => {
+    this.setState({ addedToPlans: false });
+  }
+
   render() {
+    const {
+      addedToPlans,
+    } = this.state;
+
     const {
       plannedTasks,
       achievedTasks,
@@ -131,9 +148,6 @@ class DailyList extends Component {
       recallPlans,
       applyValue,
 			isUnfinishedTasks,
-			addedToPlans,
-			cancelAddToPlans,
-			hideAddedToPlans,
     } = this.props;
 
     console.log('renderDailyList');
@@ -163,6 +177,12 @@ class DailyList extends Component {
           handleEdit={editAchieved}
           handleDelete={deleteAchieved}
         />
+        {addedToPlans
+          && <div>
+            <button onClick={this.cancelAddToPlans}>Cancel</button>
+            <button onClick={this.hideAddedToPlans}>Hide</button>
+          </div>
+        }
         <Section
           sectionTitle={PLANS}
           tasks={plansTasks}
@@ -198,6 +218,7 @@ const mapDispatch = {
   togglePlanned,
   markPlannedAchieved,
   addUnfinishedToPlans,
+  cancelAddToPlans,
 };
 
 export default connect(mapState, mapDispatch)(DailyList);

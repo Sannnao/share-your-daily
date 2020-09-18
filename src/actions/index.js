@@ -17,6 +17,7 @@ export const TOGGLE_PLANNED = 'TOGGLE_PLANNED';
 export const MARK_PLANNED_ACHIEVED = 'MARK_PLANNED_ACHIEVED';
 
 export const ADD_UNFINISHED_TO_PLANS = 'ADD_UNFINISHED_TO_PLANS';
+export const CANCEL_ADD_TO_PLANS = 'CANCEL_ADD_TO_PLANS';
 
 export const addPlanned = (text) => {
   return {
@@ -111,3 +112,7 @@ export const addUnfinishedToPlans = (id, text) => {
     fromPlanned: true,
   }
 }
+
+export const cancelAddToPlans = () => ({
+  type: CANCEL_ADD_TO_PLANS,
+})

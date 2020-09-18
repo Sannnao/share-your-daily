@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
+import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
 import { PLANNED, ACHIEVED, PLANS } from '../../constants/sectionNames';
 
@@ -36,20 +37,25 @@ const Result = ({
   };
 
   return (
-    <div className="result-container">
-      <textarea
-        className="result-field"
-        value={dailyValue}
-        readOnly
-        ref={resultRef}
-      ></textarea>
-      <button
-        className="result-container__copy-btn"
-        onClick={copyResultText}
-      >
-        {isCopied ? 'Copied' : 'Copy'}
-      </button>
-    </div>
+    <>
+      <div className="result-container">
+        <textarea
+          className="result-field"
+          value={dailyValue}
+          readOnly
+          ref={resultRef}
+        ></textarea>
+        <button
+          className="result-container__copy-btn"
+          onClick={copyResultText}
+        >
+          {isCopied ? 'Copied' : 'Copy'}
+        </button>
+      </div>
+      <Link to='/' className='get-daily-button'>
+        Go back!'
+      </Link>
+    </>
   );
 };
 

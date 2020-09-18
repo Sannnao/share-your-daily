@@ -46,13 +46,6 @@ const Section = ({
         addTask={addTask}
       />
 			{/*
-
-			{addedToPlans
-        && <div>
-          <button onClick={cancelAddToPlans}>Cancel</button>
-          <button onClick={hideAddedToPlans}>Hide</button>
-        </div>
-      }
       <InputArea
         applyValue={applyInputValue}
         handleInput={handleInput}

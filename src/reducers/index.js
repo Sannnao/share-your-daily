@@ -12,6 +12,7 @@ import {
   TOGGLE_PLANNED,
   MARK_PLANNED_ACHIEVED,
   ADD_UNFINISHED_TO_PLANS,
+  CANCEL_ADD_TO_PLANS,
 } from '../actions';
 import { PLANNED, ACHIEVED, PLANS } from '../constants/sectionNames';
 
@@ -94,7 +95,9 @@ const plansTasks = (state = [], action) => {
           text: action.text,
           fromPlanned: action.fromPlanned,
         }
-      ]
+      ];
+    case CANCEL_ADD_TO_PLANS:
+      return state.filter(({ fromPlanned }) => !fromPlanned);
     case EDIT_PLANS:
       return editTask(state, action.id, action.text);
     case DELETE_PLANS:
