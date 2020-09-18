@@ -1,9 +1,15 @@
 import React, { Component } from 'react';
+import {
+  BrowserRouter as Router,
+  Link,
+  Route,
+} from 'react-router-dom';
 import cloneDeep from 'lodash.clonedeep';
 import './app.scss';
 
 import DatePanel from './components/DatePanel/DatePanel';
 import DailyList from './components/DailyList/DailyList';
+import Result from './components/Result/Result';
 
 class App extends Component {
   state = {
@@ -11,8 +17,6 @@ class App extends Component {
     hadPlans: false,
     containerScrollCords: null,
     currentDate: new Date().toISOString().split('T')[0],
-		addedToPlans: false,
-		isDismissed: false,
   };
 
   resultRef = React.createRef();
@@ -29,106 +33,6 @@ class App extends Component {
     this.setState({ currentDate: e.target.value });
   };
 
-  handleEdit = (sectionIndex, taskId, newValue) => {
-    this.setState(({ dailyStatus }) => {
-      const copyDaily = cloneDeep(dailyStatus);
-      const tasks = copyDaily[sectionIndex].tasks;
-      const taskIndex = tasks.findIndex(task => task.id === taskId);
-      tasks[taskIndex].value = newValue;
-
-      return { dailyStatus: copyDaily };
-    });
-  };
-
-  unmarkAchieved = taskId => {
-    this.setState(({ dailyStatus }) => {
-      const copyDaily = cloneDeep(dailyStatus);
-      const plannedTasks = copyDaily[0].tasks;
-      const achievedTasks = copyDaily[1].tasks;
-      const achievedTaskIndex = achievedTasks.findIndex(
-        task => task.id === taskId
-      );
-      const plannedTaskIndex = plannedTasks.findIndex(
-        task => task.id === taskId
-      );
-
-			plannedTasks[plannedTaskIndex].isFinished = false;
-			if (plannedTasks[plannedTaskIndex].fromPlans) {
-				copyDaily[2].tasks.push(plannedTasks[plannedTaskIndex]);
-			}
-      achievedTasks.splice(achievedTaskIndex, 1);
-
-      return { dailyStatus: copyDaily };
-    });
-  };
-
-  addUnfinishedTasks = () => {
-    this.setState(({ dailyStatus }) => {
-      const copyDaily = cloneDeep(dailyStatus);
-			const plannedTasks = copyDaily[0].tasks;
-			const plansTasks = copyDaily[2].tasks;
-			const unfinishedTasks = plannedTasks.filter(task => !task.isFinished && !task.isAddedToPlans);
-			const tasksToMove = unfinishedTasks.map(task => ({ ...task, isFinished: false }));
-			plannedTasks.forEach(task => {
-				if (!task.isFinished) {
-					task.isAddedToPlans = true;
-				}
-			});
-
-			copyDaily[2].tasks = [ ...plansTasks, ...tasksToMove];
-
-      return { dailyStatus: copyDaily, addedToPlans: true };
-    });
-	};
-
-	cancelAddToPlans = () => {
-    this.setState(({ dailyStatus }) => {
-			const copyDaily = cloneDeep(dailyStatus);
-			const plannedTasks = copyDaily[0].tasks;
-			const plansTasks = copyDaily[2].tasks;
-			plansTasks.forEach(task => {
-				if (task.hasOwnProperty('isFinished')) {
-					const unfinishedTaskIndex = plannedTasks.findIndex(e => e.id === task.id);
-					plannedTasks[unfinishedTaskIndex].isAddedToPlans = false;
-				}
-			})
-      const tasksToKeep = plansTasks.filter(task => !task.hasOwnProperty('isFinished'));
-      copyDaily[2].tasks = tasksToKeep;
-
-      return { dailyStatus: copyDaily, addedToPlans: false };
-    });
-	}
-
-	hideAddedToPlans = () => {
-		this.setState(({ dailyStatus }) => {
-      const copyDaily = cloneDeep(dailyStatus);
-			const plansTasks = copyDaily[2].tasks;
-
-			copyDaily[2].tasks = plansTasks.map(task => {
-				delete task.isFinished;
-				delete task.isAddedToPlans;
-				return task;
-			});
-
-      return { dailyStatus: copyDaily, addedToPlans: false };
-    });
-	}
-
-  handleDelete = (sectionIndex, taskId) => {
-    this.setState(({ dailyStatus }) => {
-      const copyDaily = cloneDeep(dailyStatus);
-      const tasks = copyDaily[sectionIndex].tasks;
-      const taskIndex = tasks.findIndex(task => task.id === taskId);
-      tasks.splice(taskIndex, 1);
-
-      return { dailyStatus: copyDaily };
-    });
-	};
-
-	handleDismiss = () => {
-		this.setState({ isDismissed: true });
-	}
-
   recallPlans = () => {
     this.setState(({ dailyStatus, hadPlans }) => {
       const newDaily = cloneDeep(dailyStatus);
@@ -136,43 +40,6 @@ class App extends Component {
 
       return { dailyStatus: newDaily, hadPlans: false };
     });
-  };
-
-  toggleGetDaily = () => {
-    const { dailyStatus } = this.state;
-    const plans = dailyStatus[2].tasks;
-
-    if (plans.length) {
-      window.localStorage.setItem('plans', JSON.stringify(plans));
-    }
-
-    this.setState(({ getDaily, currentDate, dailyStatus }) => {
-      if (!getDaily) {
-        const dateArr = currentDate.split('-');
-        dateArr.shift();
-
-        const dailyValue = `${dateArr.reverse().join('.')}\n\n${dailyStatus
-          .map(({ sectionTitle, tasks }) => {
-            return `${sectionTitle}:\n\n- ${tasks
-              .map(({ value }) => value)
-              .join('\n- ')}`;
-          })
-          .join('\n\n')}`;
-        return { getDaily: true, dailyValue };
-      }
-
-      return { getDaily: false };
-    });
-  };
-
-  copyResultText = () => {
-    this.resultRef.current.select();
-    this.resultRef.current.setSelectionRange(0, 99999);
-
-    document.execCommand('copy');
-    window.getSelection().empty();
-
-    this.setState({ isCopied: true });
   };
 
   setContainerCords = containerScrollCords => {
@@ -195,52 +62,35 @@ class App extends Component {
     } = this.state;
 
     return (
-      <div className='App'>
-        <div className='sections-container'>
-          {getDaily ? (
-            <div className='result-container'>
-              <textarea
-                className='result-field'
-                value={dailyValue}
-                readOnly
-                ref={this.resultRef}
-              ></textarea>
-              <button
-                className='result-container__copy-btn'
-                onClick={this.copyResultText}
-              >
-                {isCopied ? 'Copied' : 'Copy'}
-              </button>
-            </div>
-          ) : (
-            <>
-              <DatePanel
+      <Router>
+        <div className='App'>
+          <div className='sections-container'>
+            <Route path='/result'>
+              <Result
                 currentDate={currentDate}
-                setNewDate={this.setNewDate}
               />
-              <DailyList
-                hadPlans={hadPlans}
-                recallPlans={this.recallPlans}
-                applyValue={this.applyValue}
-                handleDelete={this.handleDelete}
-                handleEdit={this.handleEdit}
-                unmarkAchieved={this.unmarkAchieved}
-                setContainerCords={this.setContainerCords}
-                unsetContainerCords={this.unsetContainerCords}
-                containerScrollCords={containerScrollCords}
-                addUnfinishedTasks={this.addUnfinishedTasks}
-                addedToPlans={addedToPlans}
-                cancelAddToPlans={this.cancelAddToPlans}
-                hideAddedToPlans={this.hideAddedToPlans}
-								handleDismiss={this.handleDismiss}
-              />
-            </>
-          )}
+            </Route>
+            <Route exact path='/'>
+              <>
+                <DatePanel
+                  currentDate={currentDate}
+                  setNewDate={this.setNewDate}
+                />
+                <DailyList
+                  hadPlans={hadPlans}
+                  recallPlans={this.recallPlans}
+                  setContainerCords={this.setContainerCords}
+                  unsetContainerCords={this.unsetContainerCords}
+                  containerScrollCords={containerScrollCords}
+                />
+              </>
+            </Route>
+          </div>
+          <Link to='/result' className='get-daily-button'>
+            Get daily status!'
+          </Link>
         </div>
-        <button className='get-daily-button' onClick={this.toggleGetDaily}>
-          {getDaily ? 'Go back' : 'Get daily status!'}
-        </button>
-      </div>
+      </Router>
     );
   }
 }

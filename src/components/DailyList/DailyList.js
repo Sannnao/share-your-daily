@@ -175,19 +175,15 @@ class DailyList extends Component {
   }
 }
 
-const mapState = (state) => {
-  const {
-    plannedTasks,
-    achievedTasks,
-    plansTasks,
-  } = state;
-
-  return {
-    plannedTasks,
-    achievedTasks,
-    plansTasks,
-  }
-}
+const mapState = ({
+  plannedTasks,
+  achievedTasks,
+  plansTasks,
+}) => ({
+  plannedTasks,
+  achievedTasks,
+  plansTasks,
+});
 
 const mapDispatch = {
   addPlanned,
