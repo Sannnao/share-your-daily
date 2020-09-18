@@ -7,7 +7,7 @@ const InputArea = React.forwardRef(({ addTask, existingValue }, ref) => {
   useEffect(() => {
     if (existingValue)
       setInputValue(existingValue);
-  }, [])
+  }, []);
 
   const handleInput = e => {
     setInputValue(e.target.value);
@@ -15,7 +15,7 @@ const InputArea = React.forwardRef(({ addTask, existingValue }, ref) => {
 
 	const moveSelectEnd = (e) => {
 		e.target.selectionStart = e.target.value.length;
-  }
+  };
 
   const applyValue = e => {
     if (e.key === 'Enter') {
