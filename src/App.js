@@ -4,7 +4,6 @@ import {
   Link,
   Route,
 } from 'react-router-dom';
-import cloneDeep from 'lodash.clonedeep';
 import './app.scss';
 
 import DatePanel from './components/DatePanel/DatePanel';
