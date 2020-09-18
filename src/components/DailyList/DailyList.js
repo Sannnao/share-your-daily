@@ -23,12 +23,19 @@ class DailyList extends Component {
   state = {
     isDismissed: false,
     addedToPlans: false,
+    hadPlans: null,
   };
 
   containerRef = React.createRef();
 
   componentDidMount() {
     const { containerScrollCords, unsetContainerCords } = this.props;
+
+    const plans = localStorage.getItem('plans');
+
+    if (plans) {
+      this.setState({ hadPlans: JSON.parse(plans) });
+    }
 
     if (containerScrollCords) {
       this.containerRef.current.scrollTop = containerScrollCords;
@@ -109,6 +116,18 @@ class DailyList extends Component {
     this.setState({ isDismissed: true, addedToPlans: true });
   }
 
+  recallPlans = () => {
+    const { hadPlans } = this.state;
+    const { addPlanned } = this.props;
+
+    hadPlans.forEach(({ text }) => {
+      addPlanned(text);
+    });
+
+    this.setState({ hadPlans: null });
+    localStorage.removeItem('plans');
+  }
+
   handleDismiss = () => {
     this.setState({ isDismissed: true });
   }
@@ -127,6 +146,7 @@ class DailyList extends Component {
   render() {
     const {
       addedToPlans,
+      hadPlans,
     } = this.state;
 
     const {
@@ -142,19 +162,15 @@ class DailyList extends Component {
       deletePlanned,
       deleteAchieved,
       deletePlans,
-      togglePlanned,
-      dailyStatus,
-      hadPlans,
-      recallPlans,
-      applyValue,
-			isUnfinishedTasks,
     } = this.props;
-
-    console.log('renderDailyList');
-    console.log(plannedTasks);
 
     return (
       <div className='daily-list' ref={this.containerRef}>
+        {hadPlans && (
+          <button className='daily-list__recall-btn' onClick={this.recallPlans}>
+            Recall plans...
+          </button>
+        )}
         <Section
           sectionTitle={PLANNED}
           tasks={plannedTasks}

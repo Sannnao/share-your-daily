@@ -14,7 +14,6 @@ import {
   ADD_UNFINISHED_TO_PLANS,
   CANCEL_ADD_TO_PLANS,
 } from '../actions';
-import { PLANNED, ACHIEVED, PLANS } from '../constants/sectionNames';
 
 const addTask = (state, id, text) => ([
   ...state,

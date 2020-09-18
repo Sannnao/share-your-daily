@@ -8,20 +8,11 @@ const Section = ({
   sectionTitle,
   tasks,
   addTask,
-  hadPlans,
-  recallPlans,
   handleDelete,
   handleEdit,
-  togglePlanned,
 	markAchieved,
 	unmarkAchieved,
-	sectionIndex,
-	addedToPlans,
-	cancelAddToPlans,
-	hideAddedToPlans,
 }) => {
-
-  console.log('render section', sectionTitle);
 
   return (
     <section className='section'>
@@ -45,17 +36,6 @@ const Section = ({
       <InputArea
         addTask={addTask}
       />
-			{/*
-      <InputArea
-        applyValue={applyInputValue}
-        handleInput={handleInput}
-        inputValue={inputValue}
-      />
-      {hadPlans && (
-        <button className='section__recall-btn' onClick={recallPlans}>
-          Recall plans...
-        </button>
-      )} */}
     </section>
   );
 };

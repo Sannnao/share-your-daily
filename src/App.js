@@ -13,33 +13,12 @@ import Result from './components/Result/Result';
 
 class App extends Component {
   state = {
-    getDaily: false,
-    hadPlans: false,
     containerScrollCords: null,
     currentDate: new Date().toISOString().split('T')[0],
   };
 
-  resultRef = React.createRef();
-
-  componentDidMount() {
-    const plans = window.localStorage.getItem('plans');
-
-    if (plans) {
-      this.setState({ hadPlans: JSON.parse(plans) });
-    }
-  }
-
   setNewDate = e => {
     this.setState({ currentDate: e.target.value });
-  };
-
-  recallPlans = () => {
-    this.setState(({ dailyStatus, hadPlans }) => {
-      const newDaily = cloneDeep(dailyStatus);
-      newDaily[0].tasks = hadPlans;
-
-      return { dailyStatus: newDaily, hadPlans: false };
-    });
   };
 
   setContainerCords = containerScrollCords => {
@@ -52,7 +31,6 @@ class App extends Component {
 
   render() {
     const {
-      hadPlans,
       containerScrollCords,
       currentDate,
     } = this.state;
@@ -73,8 +51,6 @@ class App extends Component {
                   setNewDate={this.setNewDate}
                 />
                 <DailyList
-                  hadPlans={hadPlans}
-                  recallPlans={this.recallPlans}
                   setContainerCords={this.setContainerCords}
                   unsetContainerCords={this.unsetContainerCords}
                   containerScrollCords={containerScrollCords}

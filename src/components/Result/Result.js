@@ -10,7 +10,7 @@ const Result = ({
   plansTasks,
 }) => {
   const [isCopied, setIsCopied] = useState(false);
-  const [dailyValue, setDailyValue] = useState(null);
+  const [dailyValue, setDailyValue] = useState('');
   const resultRef = useRef(null);
 
   useEffect(() => {

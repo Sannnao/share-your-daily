@@ -10,8 +10,6 @@ const Item = ({
   handleDelete,
   markAchieved,
   unmarkAchieved,
-  // sectionIndex,
-  togglePlanned,
   taskId,
   isPlanned,
 }) => {
@@ -70,8 +68,6 @@ const Item = ({
       unmarkAchieved(taskId);
     }
   };
-
-  console.log(taskId);
 
   return (
     <li className={clsx('item', { 'item--edit-mode': isEdit })}>
